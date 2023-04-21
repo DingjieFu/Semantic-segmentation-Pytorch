@@ -8,12 +8,12 @@
 提取码：91gk
 ## 2. How to get started
 
-### 1) Load dataset:
+#### 1) Load dataset:
     - dataset  
     -- WHDLD  
     --- Images  
     --- ImagesPNG
 
-### 2) Run **Get_Data.py**  
-### 3) Choose model and dataset in **parameter.py**  
-### 4) Run **train.py**
+#### 2) Run __Get_Data.py__
+#### 3) Choose model and dataset in __parameter.py__
+#### 4) Run __train.py__
