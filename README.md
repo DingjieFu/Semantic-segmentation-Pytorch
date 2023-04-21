@@ -14,6 +14,6 @@
     --- Images  
     --- ImagesPNG
 
-#### 2) Run __Get_Data.py__
-#### 3) Choose model and dataset in __parameter.py__
-#### 4) Run __train.py__
+#### 2) Run *Get_Data.py*
+#### 3) Choose model and dataset in *parameter.py*
+#### 4) Run *train.py*
