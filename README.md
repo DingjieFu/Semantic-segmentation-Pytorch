@@ -6,7 +6,7 @@
 ### 2) Vaihingen
 链接：https://pan.baidu.com/s/1xZrdMbDb_x1ddXXAk2B99Q 
 提取码：91gk
-
+***
 ## 2. How to get started
 
 #### 1) Load dataset:
@@ -18,5 +18,5 @@
 #### 2) Run *Get_Data.py*
 #### 3) Choose model and dataset in *parameter.py*
 #### 4) Run *train.py*
-
+***
 ## 3. **Design your own structure!**
