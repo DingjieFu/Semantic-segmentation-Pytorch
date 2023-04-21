@@ -53,8 +53,6 @@ with torch.no_grad():
 
         # fed data into network
         batch_output = net(batch_initial_image)
-        batch_output = nn.Softmax(dim=1)(
-            batch_output)  # 采用softmax得到(0,1)的概率分布
         batch_semantic_pred = batch_output.argmax(
             dim=1).squeeze().data.view(-1, 256, 256).to(device)  # 得到0-5的标签值
 
@@ -67,25 +65,32 @@ progress.close()
 # report dev evaluation
 overallAcc = metric.pixelAccuracy()
 averageAcc = metric.meanPixelAccuracy()
+kappa = metric.Kappa_score()
 mIoU = metric.meanIntersectionOverUnion()
 FWIoU = metric.Frequency_Weighted_Intersection_over_Union()
-print("\n\tOA:{:.4f}, AA:{:.4f}, mIoU:{:.4f}, FWIoU:{:.4f}".format(
-    overallAcc, averageAcc, mIoU, FWIoU))
+F1 = metric.F1_score()
+print("\n\tOA:{:.4f}, AA:{:.4f}, K:{:.4f}, mIoU:{:.4f}, FWIoU:{:.4f}, F1:{:.4f}".format(
+    overallAcc, averageAcc, kappa, mIoU, FWIoU, F1))
 metric.reset()
 
 
 # ---------- create json file ----------
-score_dict = {
-    "Model": args.model_name,
-    "OA": 0,
-    "AA": 0,
-    "mIoU": 0,
-    "FWIoU": 0,
-}
-score_dict["OA"] = overallAcc
-score_dict["AA"] = averageAcc
-score_dict["mIoU"] = mIoU
-score_dict["FWIoU"] = FWIoU
-score_json = json.dumps(score_dict, indent=4)
-with open(args.score_test, 'w', newline='\n') as f:
-    f.write(score_json)
+# score_dict = {
+#     "Model": args.model_name,
+#     "Dataset": args.dataset_name,
+#     "OA": 0,
+#     "AA": 0,
+#     "Kappa": 0,
+#     "mIoU": 0,
+#     "FWIoU": 0,
+#     "F1": 0
+# }
+# score_dict["OA"] = overallAcc
+# score_dict["AA"] = averageAcc
+# score_dict["Kappa"] = kappa
+# score_dict["mIoU"] = mIoU
+# score_dict["FWIoU"] = FWIoU
+# score_dict["F1"] = F1
+# score_json = json.dumps(score_dict, indent=4)
+# with open(args.score_test, 'w', newline='\n') as f:
+#     f.write(score_json)

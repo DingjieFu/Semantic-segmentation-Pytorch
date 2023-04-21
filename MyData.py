@@ -24,14 +24,28 @@ os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 args = parse_args()
 
 
-# ---------- 定义类别及其颜色 ----------
+# ---------- WHDLD ----------
 bare_soil = [128, 128, 128]
 building = [255, 0, 0]
 pavement = [192, 192, 0]
 road = [255, 255, 0]
 vegetation = [0, 255, 0]
 water = [0, 0, 255]
-color_map = [bare_soil, building, pavement, road, vegetation, water]
+colorMap_WHDLD = [bare_soil, building, pavement, road, vegetation, water]
+
+# ---------- Vaihingen ----------
+impervious_surface = [255, 255, 255]
+structure = [0, 0, 255]
+low_vegetation = [0, 255, 255]
+tree = [0, 255, 0]
+car = [255, 255, 0]
+background = [255, 0, 0]
+colorMap_Vaihingen = [impervious_surface, structure,
+                      low_vegetation, tree, car, background]
+
+Map_dictionary = {"WHDLD": colorMap_WHDLD, "Vaihingen": colorMap_Vaihingen}
+
+color_map = Map_dictionary[args.dataset_name]
 
 
 class MyDataset(Dataset):
@@ -92,12 +106,6 @@ class image2label():
     def __init__(self):
         """
             根据color_map,对每一种种类的颜色赋上0-5的标签
-            water       <--->  cm2lb[255] = 5
-            vegetation  <--->  cm2lb[65280] = 4
-            bare_soil   <--->  cm2lb[8421504] = 0
-            pavement    <--->  cm2lb[12632064] = 2
-            pavement    <--->  cm2lb[16711680] = 1
-            road        <--->  cm2lb[16776960] = 3
         """
         self.color_map = color_map
         # 创建256^3 次方空数组，颜色的所有组合
@@ -126,12 +134,6 @@ class label2image():
     def __call__(self, label):
         """
             逆操作,将0-5的标签还原为原来的三通道色彩
-            self.colormap[0] = [128 128 128]
-            self.colormap[1] = [255   0   0]
-            self.colormap[2] = [192 192   0]
-            self.colormap[3] = [255 255   0]
-            self.colormap[4] = [  0 255   0]
-            self.colormap[5] = [  0   0 255]
         """
         pred = self.colormap[label]
         return pred

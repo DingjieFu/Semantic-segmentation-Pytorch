@@ -40,11 +40,10 @@ metric = SegmentationMetric(args.num_class)
 # 随机选择一张
 # index = random.randint(0, len(test_data)-1)
 # print(index)
-index = 959
+index = 861
 test_image, test_label = test_data[index]
 
 output = net(test_image.unsqueeze(0).to(device))
-output = nn.Softmax(dim=1)(output)
 pred_label = output.argmax(dim=1).squeeze().data.cpu().numpy()
 
 semantic_pred = label2image()(pred_label)
@@ -56,10 +55,12 @@ metric.addBatch(pred_label, test_label)
 # report dev evaluation
 overallAcc = metric.pixelAccuracy()
 averageAcc = metric.meanPixelAccuracy()
+kappa = metric.Kappa_score()
 mIoU = metric.meanIntersectionOverUnion()
 FWIoU = metric.Frequency_Weighted_Intersection_over_Union()
-print("\n\tOA:{:.4f}, AA:{:.4f}, mIoU:{:.4f}, FWIoU:{:.4f}".format(
-    overallAcc, averageAcc, mIoU, FWIoU))
+F1 = metric.F1_score()
+print("\n\tOA:{:.4f}, AA:{:.4f}, K:{:.4f}, mIoU:{:.4f}, FWIoU:{:.4f}, F1:{:.4f}".format(
+    overallAcc, averageAcc, kappa, mIoU, FWIoU, F1))
 metric.reset()
 
 

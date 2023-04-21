@@ -6,17 +6,16 @@
 @Date:2023/03/16 09:34:14
     Note:
         运行一次即可 会在dataset中生成相应的.txt文件
+        主要作用是对数据集6:2:2划分
 '''
 
 
 import os
 import random
 import numpy as np
-from parameter import parse_args
-args = parse_args()
 
 
-def write_imgname_to_txtfile(imgdir, txtdir):
+def write_imgname_to_txtfile(imgdir, txtdir, RootPath):
     """
         write_imgname_to_txtfile():将指定文件夹下的所有文件名写入指定的txt文件中。
         imgdir:包含图像文件的文件夹路径。
@@ -24,7 +23,7 @@ def write_imgname_to_txtfile(imgdir, txtdir):
     """
     f = open(txtdir, 'w')
     for file in os.listdir(imgdir):
-        file = os.path.join(args.root_path, "Images") + "/{}".format(file)
+        file = os.path.join(RootPath, "Images") + "/{}".format(file)
         f.write("{}\n".format(file))
     f.close()
     print("write to txt finished...")
@@ -41,29 +40,26 @@ def load_filename_to_list(dir):
     return img_name_list
 
 
-def step1():
+def Dataset(RootPath):
     """
-        step1(): 将存储在指定文件夹下的所有图像名称写入指定txt文件
+        step1: 将存储在指定文件夹下的所有图像名称写入指定txt文件
         imgdir: 存放所有图像的路径
         txtdir: txt文件的输出路径
     """
-    imgdir = args.root_path + "/Images"
-    txtdir = args.root_path + "/total_list.txt"
-    write_imgname_to_txtfile(imgdir, txtdir)
-
-
-def step2():
+    imgdir = RootPath + r"/Images"
+    txtdir = RootPath + r"/total_list.txt"
+    write_imgname_to_txtfile(imgdir, txtdir, RootPath)
     """
-        step2(): 将step1中存储的txt文件中的所有图像明细,按照6:2:2的比例划分为训练集,验证集和测试集
+        step2: 将step1中存储的txt文件中的所有图像明细,按照6:2:2的比例划分为训练集,验证集和测试集
         imgdir: 存放所有图像的路径
         txtdir: txt文件的输出路径
     """
-    dir = args.root_path + "/total_list.txt"
+    dir = RootPath + r"/total_list.txt"
     totallist = load_filename_to_list(dir)
     n = totallist.size
     m = int(n * 0.4)
     print("n is:%s, m is: %s" % (n, m))
-    print(type(totallist))
+    # print(type(totallist))
     split1 = set(random.sample(list(totallist), m))
     split1_1 = set(random.sample(list(split1), m // 2))
 
@@ -71,9 +67,9 @@ def step2():
     val = split1 - split1_1
     test = split1_1
 
-    traindir = r"dataset\WHDLD\train_list.txt"
-    valdir = r"dataset\WHDLD\val_list.txt"
-    testdir = r"dataset\WHDLD\test_list.txt"
+    traindir = RootPath + r"/train_list.txt"
+    valdir = RootPath + r"/val_list.txt"
+    testdir = RootPath + r"/test_list.txt"
 
     f = open(traindir, 'w')
     for file in train:
@@ -95,5 +91,6 @@ def step2():
 
 
 if __name__ == "__main__":
-    step1()
-    step2()
+    dataset = "WHDLD"
+    root_path = "dataset/{}".format(dataset)
+    Dataset(root_path)

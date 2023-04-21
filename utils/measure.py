@@ -52,10 +52,11 @@ class SegmentationMetric(object):
 
     def meanPixelAccuracy(self):
         """
-            精确率(Precision): 预测结果中,某类别预测正确的概率
-            - Precision = TP / (TP + FP)
+            召回率(recall): 预测结果中,某类别预测正确的概率
+            - recall = TP / (TP + FN)
 
-            这里返回需要的 平均正确率(AA)
+            这里返回需要的 平均正确率(AA):不同类别的召回率的均值
+            单个对角线的值 / 所在行
         """
         # 返回一个list, 如[0.90, 0.80, 0.96], 表示类别1 2 3各类别的预测精确率
         classAcc = np.diag(self.confusionMatrix) / \
@@ -63,6 +64,19 @@ class SegmentationMetric(object):
         # 返回值, 如np.nanmean([0.90, 0.80, 0.96, nan, nan]) = (0.90 + 0.80 + 0.96) / 3 =  0.89
         meanAcc = np.nanmean(classAcc)  # np.nanmean 求平均值, nan表示遇到Nan类型, 其值取为0
         return meanAcc
+
+    def Kappa_score(self):
+        """
+            kappa系数: kappa = (po-pe)/(1-pe)
+            - po = AA
+            - pe 
+        """
+        peRows = np.sum(self.confusionMatrix, axis=0)
+        peCols = np.sum(self.confusionMatrix, axis=1)
+        sumTotal = self.confusionMatrix.sum()
+        pe = np.dot(peRows, peCols) / (sumTotal ** 2)
+        po = np.diag(self.confusionMatrix).sum() / sumTotal
+        return (po - pe) / (1 - pe)
 
     def meanIntersectionOverUnion(self):
         """
@@ -91,6 +105,22 @@ class SegmentationMetric(object):
             np.diag(self.confusionMatrix))
         FWIoU = (freq[freq > 0] * iu[freq > 0]).sum()
         return FWIoU
+
+    def F1_score(self):
+        """
+            F1 : precision 和 recall 的调和平均
+            - F1 = (2 * precision * recall) / (precision + recall)
+            precision = TP / (TP + FP)
+            recall = TP / (TP + FN)
+            - 这里返回各类别的平均F1
+        """
+        precision = np.diag(self.confusionMatrix) / \
+            self.confusionMatrix.sum(axis=0)
+        recall = np.diag(self.confusionMatrix) / \
+            self.confusionMatrix.sum(axis=1)
+        F1 = (2*precision*recall)/(precision+recall)
+        mF1 = np.nanmean(F1)  # 求各类别IoU的平均
+        return mF1
 
     def addBatch(self, imgPredict, imgLabel):
         """
