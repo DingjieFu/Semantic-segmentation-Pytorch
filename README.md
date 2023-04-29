@@ -19,4 +19,6 @@
 ### 1.3 **Design your own structure!**
 <br/><br/>
 ## 2. Model 
-### 2.1 Unet
+#### 2.1 Unet
+#### 2.2 AGUnet
+#### 2.3 SDAUnet(:joy:A structure designed by me)
